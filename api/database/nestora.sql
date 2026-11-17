@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS nestora CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE nestora;
+CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL,email VARCHAR(190) NOT NULL UNIQUE,password_hash VARCHAR(255) NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS services (id INT PRIMARY KEY,name VARCHAR(100) NOT NULL,description VARCHAR(255) NOT NULL,price DECIMAL(10,2) NOT NULL,icon VARCHAR(50) NOT NULL);
+INSERT IGNORE INTO services VALUES (1,'Cozy Studio','Comfortable stay for solo guests and couples',1800,'bed-outline'),(2,'Deluxe Suite','Spacious suite with premium amenities',3200,'home-outline'),(3,'Family Room','Extra space for family stays',4500,'people-outline');
+CREATE TABLE IF NOT EXISTS bookings (reference VARCHAR(40) PRIMARY KEY,user_id INT NOT NULL,service_id INT NOT NULL,booking_date DATE NOT NULL,booking_time TIME NOT NULL,quantity INT NOT NULL,total DECIMAL(10,2) NOT NULL,status VARCHAR(30) NOT NULL DEFAULT 'Awaiting payment',payment_method VARCHAR(50),created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id),FOREIGN KEY(service_id) REFERENCES services(id));
+CREATE TABLE IF NOT EXISTS payments (id INT AUTO_INCREMENT PRIMARY KEY,reference VARCHAR(40) NOT NULL,method VARCHAR(50) NOT NULL,status VARCHAR(30) NOT NULL,amount DECIMAL(10,2) NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(reference) REFERENCES bookings(reference));
